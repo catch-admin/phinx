@@ -494,7 +494,7 @@ class Column
      */
     public function setValues($values)
     {
-        if (!is_array($values)) {
+        if (is_string($values)) {
             $values = preg_split('/,\s*/', $values);
         }
         $this->values = $values;
