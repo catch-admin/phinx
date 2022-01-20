@@ -72,11 +72,11 @@ class Config implements ConfigInterface, NamespaceAwareInterface
     /**
      * Create a new instance of the config class using a Yaml file path.
      *
-     * @param  string $configFilePath Path to the Yaml File
-     * @throws \RuntimeException
-     * @return \Phinx\Config\Config
+     * @param string $configFilePath Path to the Yaml File
+     * @return Config
+     *@throws \RuntimeException
      */
-    public static function fromYaml($configFilePath)
+    public static function fromYaml(string $configFilePath): Config
     {
         $configFile = file_get_contents($configFilePath);
         $configArray = Yaml::parse($configFile);
@@ -94,11 +94,11 @@ class Config implements ConfigInterface, NamespaceAwareInterface
     /**
      * Create a new instance of the config class using a JSON file path.
      *
-     * @param  string $configFilePath Path to the JSON File
-     * @throws \RuntimeException
-     * @return \Phinx\Config\Config
+     * @param string $configFilePath Path to the JSON File
+     * @return Config
+     *@throws \RuntimeException
      */
-    public static function fromJson($configFilePath)
+    public static function fromJson(string $configFilePath): Config
     {
         $configArray = json_decode(file_get_contents($configFilePath), true);
         if (!is_array($configArray)) {
@@ -114,11 +114,11 @@ class Config implements ConfigInterface, NamespaceAwareInterface
     /**
      * Create a new instance of the config class using a PHP file path.
      *
-     * @param  string $configFilePath Path to the PHP File
-     * @throws \RuntimeException
-     * @return \Phinx\Config\Config
+     * @param string $configFilePath Path to the PHP File
+     * @return Config
+     *@throws \RuntimeException
      */
-    public static function fromPhp($configFilePath)
+    public static function fromPhp(string $configFilePath): Config
     {
         ob_start();
         /** @noinspection PhpIncludeInspection */
@@ -178,7 +178,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
     /**
      * {@inheritdoc}
      */
-    public function hasEnvironment($name)
+    public function hasEnvironment($name): bool
     {
         return ($this->getEnvironment($name) !== null);
     }
@@ -262,7 +262,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param bool $dropNamespace Return the base migration class name without the namespace.
      * @return string
      */
-    public function getMigrationBaseClassName($dropNamespace = true)
+    public function getMigrationBaseClassName($dropNamespace = true): string
     {
         $className = !isset($this->values['migration_base_class']) ? 'Phinx\Migration\AbstractMigration' : $this->values['migration_base_class'];
 
@@ -318,7 +318,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      *
      * @return string
      */
-    public function getVersionOrder()
+    public function getVersionOrder(): string
     {
         if (!isset($this->values['version_order'])) {
             return self::VERSION_ORDER_CREATION_TIME;
@@ -332,7 +332,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      *
      * @return bool
      */
-    public function isVersionOrderCreationTime()
+    public function isVersionOrderCreationTime(): bool
     {
         $versionOrder = $this->getVersionOrder();
 
@@ -345,7 +345,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param array $arr Array to replace
      * @return array
      */
-    protected function replaceTokens(array $arr)
+    protected function replaceTokens(array $arr): array
     {
         // Get environment variables
         // $_ENV is empty because variables_order does not include it normally
@@ -371,7 +371,7 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param array $tokens Array of tokens to search for
      * @return array
      */
-    protected function recurseArrayForTokens($arr, $tokens)
+    protected function recurseArrayForTokens(array $arr, array $tokens): array
     {
         $out = [];
         foreach ($arr as $name => $value) {
@@ -394,48 +394,48 @@ class Config implements ConfigInterface, NamespaceAwareInterface
 
     /**
      * @time 2022年01月18日
-     * @param mixed $id
-     * @param mixed $value
+     * @param $offset
+     * @param $value
      */
     #[\ReturnTypeWillChange]
-    public function offsetSet($id, $value): void
+    public function offsetSet($offset, $value): void
     {
-        $this->values[$id] = $value;
+        $this->values[$offset] = $value;
     }
 
     /**
      * @time 2022年01月18日
-     * @param mixed $id
+     * @param  $offset
      * @return bool
      */
     #[\ReturnTypeWillChange]
-    public function offsetGet($id): bool
+    public function offsetGet($offset): bool
     {
-        if (!array_key_exists($id, $this->values)) {
-            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
+        if (! array_key_exists($offset, $this->values)) {
+            throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $offset));
         }
 
-        return $this->values[$id] instanceof \Closure ? $this->values[$id]($this) : $this->values[$id];
+        return $this->values[$offset] instanceof \Closure ? $this->values[$offset]($this) : $this->values[$offset];
     }
 
     /**
      * @time 2022年01月18日
-     * @param mixed $id
+     * @param  $offset
      * @return bool
      */
     #[\ReturnTypeWillChange]
-    public function offsetExists($id): bool
+    public function offsetExists($offset): bool
     {
-        return isset($this->values[$id]);
+        return isset($this->values[$offset]);
     }
 
     /**
      * @time 2022年01月18日
-     * @param mixed $id
+     * @param $offset
      */
     #[\ReturnTypeWillChange]
-    public function offsetUnset($id): void
+    public function offsetUnset($offset): void
     {
-        unset($this->values[$id]);
+        unset($this->values[$offset]);
     }
 }
