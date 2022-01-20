@@ -397,7 +397,8 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param mixed $id
      * @param mixed $value
      */
-    public function offsetSet(mixed $id, mixed $value): void
+    #[\ReturnTypeWillChange]
+    public function offsetSet($id, $value): void
     {
         $this->values[$id] = $value;
     }
@@ -407,7 +408,8 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param mixed $id
      * @return bool
      */
-    public function offsetGet(mixed $id): bool
+    #[\ReturnTypeWillChange]
+    public function offsetGet($id): bool
     {
         if (!array_key_exists($id, $this->values)) {
             throw new \InvalidArgumentException(sprintf('Identifier "%s" is not defined.', $id));
@@ -421,7 +423,8 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @param mixed $id
      * @return bool
      */
-    public function offsetExists(mixed $id): bool
+    #[\ReturnTypeWillChange]
+    public function offsetExists($id): bool
     {
         return isset($this->values[$id]);
     }
@@ -430,7 +433,8 @@ class Config implements ConfigInterface, NamespaceAwareInterface
      * @time 2022年01月18日
      * @param mixed $id
      */
-    public function offsetUnset(mixed $id): void
+    #[\ReturnTypeWillChange]
+    public function offsetUnset($id): void
     {
         unset($this->values[$id]);
     }
